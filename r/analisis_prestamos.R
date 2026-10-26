@@ -3,7 +3,7 @@
 # Analítica de Negocios y Big Data · Universidad ORT Uruguay · 2024
 #
 # Datos: 35.000 préstamos personales de una institución financiera, 12 variables.
-# El archivo de datos no se publica por confidencialidad. Ubicalo como data/Datos 2024.csv
+# El archivo de datos no se publica por confidencialidad. Ubicalo en data/Datos 2024.csv y corré el script desde la raíz del repo
 
 # Librerías ------------------------------------------------------------------
 paquetes <- c("rio", "car", "rpart", "rpart.plot", "rattle")

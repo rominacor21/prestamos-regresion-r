@@ -6,17 +6,7 @@ Modelo en R para estimar cuánto dinero pide cada cliente de una institución fi
 
 ## El problema
 
-Una institución financiera quiere entender qué características del cliente explican el monto del préstamo que solicita, para predecirlo y ajustar su oferta y su gestión de riesgo.
-
-- 35.000 préstamos personales
-- 12 variables: ingresos, crédito disponible, edad, educación, estado civil, sector de empleo, región, dependientes y default
-
-## Qué hicimos
-
-1. **Análisis descriptivo:** correlaciones, histogramas, boxplots, dispersión y tablas de frecuencia.
-2. **Regresión lineal múltiple** por mínimos cuadrados, con selección **stepwise**, chequeo de **multicolinealidad (VIF)** y validación **train / test**.
-3. **Árbol de regresión** con poda por parámetro de complejidad, reglas inducidas e importancia de variables.
-4. **Comparación** de ambos modelos por MSE y R².
+La institución quiere entender qué características del cliente explican el monto que pide, para predecirlo y ajustar su oferta y su gestión de riesgo. La base tiene **35.000 préstamos y 12 variables**.
 
 ## Resultados
 
@@ -24,26 +14,56 @@ Una institución financiera quiere entender qué características del cliente ex
 |---|---|---|
 | R² | 95,67 % (ajustado) | 86,94 % (test) |
 | MSE test | 47.986.853 | 165.822.160 |
+| Sobreajuste | No | No |
 
-- Los ingresos tienen una correlación fuerte y positiva con el monto (r = 0,83).
-- El crédito disponible tiene una correlación negativa (r = -0,69).
-- Variables significativas: ingresos, crédito disponible, dependientes, educación y estado civil. Género, región y sector de empleo no lo fueron.
-- Todos los VIF dieron menores a 2, sin multicolinealidad.
+- Los **ingresos** empujan el monto para arriba (r = 0,83) y el **crédito disponible** lo baja (r = -0,69).
+- Género, región y sector de empleo no resultaron significativos.
 - **Conclusión:** la regresión lineal predice mejor y es más fácil de interpretar. El árbol suma valor para segmentar clientes con reglas simples.
+
+## Estructura del repo
+
+```
+prestamos-regresion-r/
+├── r/
+│   └── analisis_prestamos.R   descriptivo, regresión, árbol y comparación
+├── data/README.md             diccionario de las 12 variables
+└── docs/conclusiones.md       ecuación del modelo, métricas e interpretación
+```
+
+## Pipeline
+
+```mermaid
+flowchart LR
+    A[(35.000 préstamos)] --> B[Variables dummy]
+    B --> C[Análisis descriptivo:<br/>correlaciones y gráficos]
+    C --> D[Train / test 50-50]
+    D --> E[Regresión lineal<br/>+ stepwise + VIF]
+    D --> F[Árbol de regresión<br/>+ poda por complejidad]
+    E --> G[Comparación<br/>por MSE y R²]
+    F --> G
+```
 
 ## Cómo correrlo
 
-```r
-# Ubicá el archivo de datos en data/Datos 2024.csv
-source("analisis_prestamos.R")
-```
+1. Instalá R. El script instala solo los paquetes que falten.
+2. Ubicá la base en `data/Datos 2024.csv` (ver [data/README.md](data/README.md)).
+3. Desde la raíz del repo:
+   ```r
+   source("r/analisis_prestamos.R")
+   ```
 
-Los datos no se publican porque pertenecen a la institución.
+## Decisiones de diseño
+
+- **Default fuera del modelo**, como pedía la consigna para predecir el monto.
+- **Variables categóricas como dummies**, para poder usarlas en la regresión.
+- **Stepwise en las dos direcciones** para quedarnos solo con las variables significativas.
+- **Validación con train y test 50-50** y semilla fija, para medir sobreajuste y que el resultado sea reproducible.
+- **Poda del árbol** con el parámetro de complejidad de menor error de validación cruzada.
 
 ## Stack
 
-R · rio · car · rpart · rattle
+R · rio · car · rpart · rpart.plot · rattle
 
 ---
 
-**Romina Cor Castro** · [LinkedIn](https://www.linkedin.com/in/rominacor/)
+**Romina Cor Castro** · [Portafolio](https://rominacor21.github.io) · [LinkedIn](https://www.linkedin.com/in/rominacor/)
